@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spin Alert | Wind-powered spinning reflective marker</title>
+<meta name="description" content="Spin Alert is an FHWA-approved, wind-powered reflective hazard warning device for barrels, barricades, attenuators, barrier walls and road signs. No batteries, no wiring.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;800;900&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --asphalt: #23272b;
+    --asphalt-2: #353a40;
+    --concrete: #eceae4;
+    --paper: #f8f7f3;
+    --orange: #f26522;
+    --yellow: #ffc20e;
+    --red: #b3121f;
+    --silver: #d6d9dc;
+    --ink-soft: #555b61;
+    --display: "Overpass", "Highway Gothic", "Arial Narrow", sans-serif;
+    --body: "Public Sans", system-ui, sans-serif;
+    --wrap: 1180px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--paper); color: var(--asphalt);
+    font-family: var(--body); font-size: 1.0625rem; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 2px; }
+  .wrap { width: min(100% - 2.5rem, var(--wrap)); margin-inline: auto; }
+
+  h1, h2, h3 { font-family: var(--display); line-height: 1.05; margin: 0; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2.6rem, 5.6vw, 4.6rem); font-weight: 900; }
+  h2 { font-size: clamp(2rem, 3.6vw, 3rem); font-weight: 800; }
+  h3 { font-size: 1.35rem; font-weight: 800; }
+  p { margin: 0 0 1em; max-width: 62ch; }
+
+  /* ---------- Header ---------- */
+  .site-head {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(248,247,243,.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid #dedbd3;
+  }
+  .site-head .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .logo { display: flex; align-items: center; gap: .6rem; text-decoration: none; font-family: var(--display); font-weight: 900; font-size: 1.4rem; }
+  .nav { display: flex; gap: 1.75rem; align-items: center; }
+  .nav a { text-decoration: none; font-weight: 500; font-size: .98rem; }
+  .nav a:hover { color: var(--orange); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    font-family: var(--display); font-weight: 800; font-size: 1.05rem;
+    padding: .85rem 1.4rem .75rem; border-radius: 6px; text-decoration: none;
+    border: 2px solid var(--asphalt); cursor: pointer; transition: background .15s, color .15s;
+  }
+  .btn-primary { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .btn-primary:hover { background: #d9541a; border-color: #d9541a; }
+  .btn-ghost { background: transparent; color: var(--asphalt); }
+  .btn-ghost:hover { background: var(--asphalt); color: var(--paper); }
+  .nav .btn { padding: .55rem 1rem .45rem; font-size: .95rem; }
+  @media (max-width: 760px) { .nav a:not(.btn) { display: none; } }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: clamp(2.5rem, 6vw, 5rem) 0 clamp(3rem, 6vw, 5rem); }
+  .hero .wrap { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+  .hero-copy .lede { font-size: 1.2rem; color: var(--ink-soft); margin: 1.5rem 0 2rem; max-width: 46ch; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+  .hero-facts { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin: 2.25rem 0 0; padding: 0; list-style: none; font-weight: 600; font-size: .95rem; }
+  .hero-facts li { display: flex; align-items: center; gap: .5rem; }
+  .hero-facts li::before { content: ""; width: 10px; height: 10px; background: var(--orange); transform: rotate(45deg); }
+  @media (max-width: 900px) { .hero .wrap { grid-template-columns: minmax(0,1fr); } }
+
+  /* Hero photo */
+  .hero-photo { margin: 0; }
+  .hero-photo img {
+    width: 100%; max-height: 720px; object-fit: cover; object-position: center 20%;
+    border-radius: 14px; box-shadow: 0 30px 60px -30px rgba(35,39,43,.45);
+  }
+  .hero-photo figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: .7rem; }
+  @media (max-width: 900px) { .hero-photo img { height: min(110vw, 560px); } }
+
+  /* ---------- Sections ---------- */
+  .band { padding: clamp(4rem, 8vw, 7rem) 0; }
+  .band-dark { background: var(--asphalt); color: var(--concrete); }
+  .band-concrete { background: var(--concrete); }
+  .section-head { max-width: 760px; margin-bottom: 3rem; }
+  .section-head p { color: var(--ink-soft); font-size: 1.15rem; margin-top: 1rem; }
+  .band-dark .section-head p { color: #b9bec3; }
+  /* Headings that sit on one line on wide screens, and wrap naturally on smaller ones */
+  .section-head.one-line { max-width: none; }
+  .section-head.one-line p { max-width: 72ch; }
+  @media (min-width: 1000px) { .section-head.one-line h2 { white-space: nowrap; } }
+
+  /* How it works: a real cause-and-effect chain */
+  .chain { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 4px solid var(--orange); }
+  .chain > div { padding: 2rem 2rem 0 0; position: relative; }
+  .chain > div + div { padding-left: 2rem; border-left: 1px solid #4a5056; }
+  .chain .icon { width: 56px; height: 56px; margin-bottom: 1.25rem; }
+  .chain p { color: #c4c8cc; margin-top: .6rem; }
+  @media (max-width: 820px) {
+    .chain { grid-template-columns: 1fr; }
+    .chain > div + div { padding-left: 0; border-left: 0; border-top: 1px solid #4a5056; }
+    .chain > div { padding-bottom: 1.5rem; }
+  }
+
+  /* Features */
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem 4rem; }
+  .feature { display: grid; grid-template-columns: 52px 1fr; gap: 1.25rem; }
+  .feature .mark { width: 52px; height: 52px; }
+  .feature p { color: var(--ink-soft); margin-top: .5rem; }
+  @media (max-width: 760px) { .features { grid-template-columns: 1fr; } }
+
+  /* Sheeting */
+  .sheeting .wrap { display: grid; grid-template-columns: .85fr 1fr; gap: clamp(2rem, 6vw, 5rem); align-items: center; }
+  .sheeting figure { margin: 0; }
+  .sheeting img { border-radius: 10px; width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+  .sheeting figcaption { font-size: .85rem; color: var(--ink-soft); margin-top: .6rem; }
+  .colors { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; gap: .9rem; }
+  .colors li { display: grid; grid-template-columns: 64px 1fr; gap: 1rem; align-items: center; }
+  .chip { height: 34px; border-radius: 4px; position: relative; overflow: hidden; }
+  .chip::after {
+    content: ""; position: absolute; inset: 0; opacity: .45;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 7px, rgba(255,255,255,.9) 7px 8px),
+      repeating-linear-gradient(-45deg, transparent 0 7px, rgba(255,255,255,.9) 7px 8px);
+  }
+  .colors strong { font-family: var(--display); font-size: 1.1rem; display: block; line-height: 1.2; }
+  .colors span { color: var(--ink-soft); font-size: .95rem; }
+  @media (max-width: 820px) { .sheeting .wrap { grid-template-columns: 1fr; } .sheeting figure { max-width: 420px; } }
+
+  /* Specs */
+  .specs { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+  table { width: 100%; border-collapse: collapse; font-size: 1rem; }
+  th, td { text-align: left; padding: 1rem 0; border-bottom: 1px solid #cfccc4; vertical-align: top; }
+  th { font-family: var(--display); font-weight: 800; width: 40%; padding-right: 1.5rem; }
+  tr:first-child th, tr:first-child td { border-top: 3px solid var(--asphalt); }
+  td.pending { color: var(--ink-soft); }
+  .uses { margin-top: 2rem; }
+  .uses ul { padding-left: 1.2rem; margin: .6rem 0 0; }
+  .uses li { margin-bottom: .35rem; }
+  @media (max-width: 820px) { .specs { grid-template-columns: 1fr; } }
+
+  /* Contact */
+  .contact .wrap { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(2rem, 6vw, 5rem); }
+  .contact h2 { color: #fff; }
+  .contact .reasons { list-style: none; padding: 0; margin: 2rem 0 0; }
+  .contact .reasons li { padding: .9rem 0; border-top: 1px solid #4a5056; }
+  .contact .reasons strong { font-family: var(--display); color: #fff; font-size: 1.1rem; display: block; }
+  .contact .reasons span { color: #b9bec3; font-size: .97rem; }
+  form { background: var(--paper); color: var(--asphalt); border-radius: 12px; padding: clamp(1.5rem, 3vw, 2.25rem); display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 1.25rem; }
+  .field { display: grid; gap: .35rem; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-weight: 600; font-size: .95rem; }
+  input[type=text], input[type=email], select, textarea {
+    font: inherit; font-size: 1rem; padding: .7rem .8rem; border: 1.5px solid #bdb9b0; border-radius: 6px; background: #fff; color: inherit; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(242,101,34,.25); }
+  textarea { min-height: 110px; resize: vertical; }
+  form .btn { justify-self: start; }
+  .form-status { grid-column: 1 / -1; margin: 0; font-weight: 600; min-height: 1.5em; }
+  @media (max-width: 860px) { .contact .wrap { grid-template-columns: 1fr; } }
+  @media (max-width: 520px) { form { grid-template-columns: 1fr; } }
+
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Results */
+  .results { padding: clamp(3rem, 6vw, 4.5rem) 0; border-top: 1px solid #dedbd3; }
+  .results .wrap { display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+  .result { border-top: 4px solid var(--orange); padding-top: 1.25rem; }
+  .result h3 { font-size: 1.15rem; }
+  .result .where { font-weight: 600; color: var(--ink-soft); font-size: .95rem; margin: .35rem 0 .6rem; }
+  .result p:last-child { margin: 0; }
+  blockquote { margin: 0; border-top: 4px solid var(--asphalt); padding-top: 1.25rem; }
+  blockquote p { font-size: 1.1rem; line-height: 1.55; }
+  blockquote footer, .quote-by { font-size: .95rem; color: var(--ink-soft); font-weight: 600; }
+  @media (max-width: 900px) { .results .wrap { grid-template-columns: 1fr; } }
+
+  /* Field gallery */
+  .gallery { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 210px; gap: 14px; margin: 0; padding: 0; list-style: none; }
+  .gallery li { position: relative; border-radius: 10px; overflow: hidden; background: #ccc; }
+  .gallery li.big { grid-column: span 2; grid-row: span 2; }
+  .gallery li.wide { grid-column: span 2; }
+  .gallery img { width: 100%; height: 100%; object-fit: cover; }
+  .gallery figcaption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 2rem .9rem .7rem;
+    background: linear-gradient(transparent, rgba(20,22,25,.82)); color: #fff; font-weight: 600; font-size: .92rem; line-height: 1.3;
+  }
+  .gallery figure { margin: 0; height: 100%; }
+  @media (max-width: 900px) { .gallery { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 180px; } }
+  @media (max-width: 520px) { .gallery { grid-template-columns: 1fr; grid-auto-rows: 220px; } .gallery li.big, .gallery li.wide { grid-column: auto; grid-row: auto; } }
+
+  /* Sizes */
+  .sizes { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-top: 2.5rem; }
+  .size { border-top: 3px solid var(--asphalt); padding-top: 1.1rem; }
+  .size .dim { font-family: var(--display); font-weight: 900; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1; }
+  .size .bracket { font-weight: 600; margin: .4rem 0 .6rem; }
+  .size p:last-child { color: var(--ink-soft); margin: 0; }
+  .size-note { margin-top: 2rem; color: var(--ink-soft); }
+  @media (max-width: 600px) { .sizes { grid-template-columns: 1fr; } }
+  .warranty { font-size: .88rem; color: var(--ink-soft); margin-top: 1.25rem; max-width: none; }
+
+  /* Videos */
+  .videos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .video { margin: 0; }
+  .video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: #000; }
+  .video-frame button { all: unset; cursor: pointer; position: absolute; inset: 0; display: block; }
+  .video-frame button:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+  .video-frame img { width: 100%; height: 100%; object-fit: cover; opacity: .85; transition: opacity .2s; }
+  .video-frame button:hover img { opacity: 1; }
+  .video-frame .play { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%; background: var(--orange); display: grid; place-items: center; }
+  .video-frame .play::after { content: ""; border-left: 20px solid #fff; border-top: 12px solid transparent; border-bottom: 12px solid transparent; margin-left: 5px; }
+  .video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video figcaption { font-family: var(--display); font-weight: 800; font-size: 1.1rem; margin-top: .7rem; }
+  .band-dark .video figcaption { color: #fff; }
+  .more-link { display: inline-block; margin-top: 2rem; font-weight: 600; color: #fff; }
+  @media (max-width: 820px) { .videos { grid-template-columns: 1fr; } }
+
+  .direct { margin-top: 2rem; display: grid; gap: .3rem; font-size: 1.05rem; }
+  .direct a { color: #fff; font-weight: 600; }
+
+  footer { background: #1b1e21; color: #9aa0a6; font-size: .9rem; padding: 2rem 0; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  footer a { color: #d5d8db; }
+</style>
+</head>
+<body>
+
+<!-- Shared SVG definitions -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Microprismatic diamond texture, like the sheeting in the product photo -->
+    <pattern id="prism" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="12" height="12" fill="none"/>
+      <path d="M0 0H12M0 0V12" stroke="#fff" stroke-opacity=".55" stroke-width="1.6"/>
+    </pattern>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feComponentTransfer in="SourceGraphic" result="bright"><feFuncR type="linear" slope="1.5"/><feFuncG type="linear" slope="1.5"/><feFuncB type="linear" slope="1.5"/></feComponentTransfer>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="bright"/></feMerge>
+    </filter>
+    <symbol id="logomark" viewBox="-50 -50 100 100">
+      <g>
+        <path d="M0 0 C10 -6 30 -26 44 -14 L22 6 Z" fill="#f26522"/>
+        <path d="M0 0 C10 -6 30 -26 44 -14 L22 6 Z" fill="#ffc20e" transform="rotate(120)"/>
+        <path d="M0 0 C10 -6 30 -26 44 -14 L22 6 Z" fill="#b3121f" transform="rotate(240)"/>
+        <circle r="6" fill="#23272b"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Spin Alert home">
+      Spin Alert
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#how">How it works</a>
+      <a href="#field">In the field</a>
+      <a href="#products">Products</a>
+      <a href="#videos">Videos</a>
+      <a class="btn btn-primary" href="#contact">Request a sample</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <h1>Make every drum, sign and barricade harder to miss.</h1>
+        <p class="lede">Spin Alert is a lightweight, wind-powered hazard warning device. It mounts on barrels, barricades, attenuators, barrier walls and road signs. Its spinning motion catches drivers' attention during the day, and its high-intensity reflective sheeting stands out at night. It needs no batteries, wiring or charging.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contact">Request a sample</a>
+          <a class="btn btn-ghost" href="#specs">See specifications</a>
+        </div>
+        <ul class="hero-facts">
+          <li>FHWA approved</li>
+          <li>Wind powered, no batteries</li>
+          <li>Under 2&frac12; lb</li>
+        </ul>
+      </div>
+
+      <div>
+        <figure class="hero-photo">
+          <img src="assets/spin-alert-stop-sign.jpg" alt="An orange and white Spin Alert marker mounted on top of an all-way stop sign beside a road" width="640" height="853">
+          <figcaption>Spin Alert mounted on an all-way stop sign</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="results" aria-labelledby="resultsTitle">
+    <h2 id="resultsTitle" class="visually-hidden">Results from agencies using Spin Alert</h2>
+    <div class="wrap">
+      <div class="result">
+        <h3>Fewer incidents on county roads</h3>
+        <p class="where">Allen County Highway Department, Indiana, 2009</p>
+        <p>Reported a significant reduction in incidents when Spin Alerts were used on warning and regulatory signs.</p>
+      </div>
+      <div class="result">
+        <h3>Fewer crashes at barrier walls</h3>
+        <p class="where">Georgia DOT, 2011</p>
+        <p>Reported a very significant reduction in crashes and incidents when Spin Alerts were used on crash cushions and barrier walls.</p>
+      </div>
+      <blockquote>
+        <p>&ldquo;It is brighter and more reliable than most battery-powered flashing lights. It is cost effective, uses no batteries, and requires no maintenance.&rdquo;</p>
+        <p class="quote-by">Mike Eckert, Tech Services Manager, Allen County (IN) Highway Department</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="band band-dark" id="how">
+    <div class="wrap">
+      <div class="section-head one-line">
+        <h2>Motion gets noticed. Reflection gets seen.</h2>
+        <p>Approved by the FHWA in 2009, Spin Alert adds an extra degree of attention to any traffic control device. It works in daylight, at night and in bad weather such as rain, sleet, snow, fog and smoke, which is when drivers need the extra warning most.</p>
+      </div>
+      <div class="chain">
+        <div>
+          <svg class="icon" viewBox="0 0 56 56" aria-hidden="true"><path d="M6 20h30a7 7 0 1 0-7-7M6 30h40a6 6 0 1 1-6 6M6 40h20" fill="none" stroke="#ffc20e" stroke-width="3.5" stroke-linecap="round"/></svg>
+          <h3>Wind turns the rotor</h3>
+          <p>Passing traffic and natural breezes keep the vanes turning. The marker needs no power source.</p>
+        </div>
+        <div>
+          <svg class="icon" viewBox="-28 -28 56 56" aria-hidden="true"><use href="#logomark" x="-26" y="-26" width="52" height="52"/></svg>
+          <h3>Motion draws the eye</h3>
+          <p>People notice movement in their peripheral vision before they notice a fixed shape. The spinning vanes help drivers spot the device sooner.</p>
+        </div>
+        <div>
+          <svg class="icon" viewBox="0 0 56 56" aria-hidden="true"><path d="M4 28h18M8 18l14 6M8 38l14-6" stroke="#fff6d6" stroke-width="3" stroke-linecap="round"/><path d="M38 10l14 18-14 18-10-18z" fill="#f26522"/><path d="M38 10l14 18-14 18-10-18z" fill="url(#prism)"/></svg>
+          <h3>Sheeting returns headlights</h3>
+          <p>High-intensity reflective sheeting on each vane reflects headlights back toward the driver, so the motion is still visible after dark.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="field">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>In use on roads and work zones</h2>
+        <p>Spin Alert fits the devices agencies already put out: channelizing barrels, barricades, crash cushions, barrier walls and warning and regulatory signs.</p>
+      </div>
+      <ul class="gallery">
+        <li class="big"><figure><img src="assets/work-zone-drums.jpg" alt="Orange Spin Alert markers on top of construction drums lining a lane closure" loading="lazy"><figcaption>Work zone channelizing drums</figcaption></figure></li>
+        <li><figure><img src="assets/drum-closeup.jpg" alt="Close-up of a yellow Spin Alert mounted on a construction drum with its bracket" loading="lazy"><figcaption>Drum mount, standard bracket</figcaption></figure></li>
+        <li><figure><img src="assets/speed-limit-sign.jpg" alt="Red Spin Alert on top of a speed limit 55 ahead warning sign" loading="lazy"><figcaption>Speed limit ahead sign</figcaption></figure></li>
+        <li><figure><img src="assets/quadguard-attenuator.jpg" alt="Yellow Spin Alert mounted on a QuadGuard crash cushion" loading="lazy"><figcaption>QuadGuard crash cushion</figcaption></figure></li>
+        <li><figure><img src="assets/school-crossing.jpg" alt="Red Spin Alert on top of a fluorescent yellow-green school crossing sign" loading="lazy"><figcaption>School crossing sign</figcaption></figure></li>
+        <li><figure><img src="assets/barrier-wall.jpg" alt="Yellow Spin Alerts spaced along a concrete barrier wall beside highway traffic" loading="lazy"><figcaption>Concrete barrier wall</figcaption></figure></li>
+        <li><figure><img src="assets/tau-attenuator.jpg" alt="Yellow Spin Alert mounted on a TAU-II crash cushion at a highway gore" loading="lazy"><figcaption>TAU-II crash cushion</figcaption></figure></li>
+        <li class="wide"><figure><img src="assets/speed-limit-overpass.jpg" alt="Two Spin Alerts on a speed limit 55 ahead sign under a highway overpass in Marion County" loading="lazy"><figcaption>Highway signs, Marion County, Indiana</figcaption></figure></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band band-concrete">
+    <div class="wrap">
+      <div class="section-head one-line">
+        <h2>Built for the field, not the maintenance schedule</h2>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <svg class="mark" viewBox="0 0 52 52" aria-hidden="true"><rect x="6" y="6" width="40" height="40" transform="rotate(45 26 26)" fill="#ffc20e"/><path d="M18 28h16M26 20l8 8-8 8" fill="none" stroke="#23272b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <h3>Wind-powered operation</h3>
+            <p>Powered entirely by wind for continuous operation. There are no batteries to replace and no external power to run to the work zone.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <svg class="mark" viewBox="0 0 52 52" aria-hidden="true"><rect x="6" y="6" width="40" height="40" transform="rotate(45 26 26)" fill="#f26522"/><path d="M26 16v13M26 34v2" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></svg>
+          <div>
+            <h3>Better hazard visibility</h3>
+            <p>Its spinning motion makes drivers notice hazards and important signs sooner, giving them more time to slow down or change lanes.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <svg class="mark" viewBox="0 0 52 52" aria-hidden="true"><rect x="6" y="6" width="40" height="40" transform="rotate(45 26 26)" fill="#5f8f3e"/><path d="M19 32c0-9 7-14 15-14 0 9-6 15-15 14zm0 0l7-7" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div>
+            <h3>Sustainable energy design</h3>
+            <p>Wind is its only energy source, so there are no electrical connections and no spent batteries to throw away. That makes it a simple choice for agencies with sustainability goals.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <svg class="mark" viewBox="0 0 52 52" aria-hidden="true"><rect x="6" y="6" width="40" height="40" transform="rotate(45 26 26)" fill="#d6d9dc"/><rect x="6" y="6" width="40" height="40" transform="rotate(45 26 26)" fill="url(#prism)" opacity=".9"/><circle cx="26" cy="26" r="6" fill="#23272b"/></svg>
+          <div>
+            <h3>High-intensity reflective sheeting</h3>
+            <p>High-intensity reflective sheeting combined with spinning motion makes a hazard warning device that stays highly visible in both daytime and nighttime conditions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band sheeting" id="products">
+    <div class="wrap">
+      <figure>
+        <img src="assets/sheeting.jpg" alt="Samples of red, orange, yellow and white high-intensity reflective sheeting with a diamond prism pattern" width="480" height="640" loading="lazy">
+        <figcaption>Spin Alert reflective sheeting samples</figcaption>
+      </figure>
+      <div>
+        <h2>Two sizes, a range of colors</h2>
+        <p style="margin-top:1rem;color:var(--ink-soft);font-size:1.15rem">Both sizes weigh less than 2&frac12; lb. 3M Diamond Grade fluorescent yellow and fluorescent orange are the most common sheeting colors, and other reflective colors are available.</p>
+        <div class="sizes">
+          <div class="size">
+            <div class="dim">6&Prime; &times; 12&Prime;</div>
+            <p class="bracket">Standard, on a 12&Prime; mounting bracket</p>
+            <p>For barrels, barricades, guide rails, and smaller regulatory and warning signs close to traffic.</p>
+          </div>
+          <div class="size">
+            <div class="dim">10&Prime; &times; 12&Prime;</div>
+            <p class="bracket">Large, on an 18&Prime; mounting bracket</p>
+            <p>For extra conspicuity on any traffic control device, including attenuators, barrier walls, and larger regulatory and warning signs.</p>
+          </div>
+        </div>
+        <p class="size-note">4&Prime; &times; 3&Prime; L-brackets for mounting on horizontal or unlevel surfaces are sold separately.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-concrete" id="specs">
+    <div class="wrap specs">
+      <div>
+        <h2>Specifications</h2>
+        <p style="margin-top:1rem;color:var(--ink-soft);font-size:1.15rem">The key facts for writing Spin Alert into a traffic control plan or standard.</p>
+        <a class="btn btn-ghost" href="#contact" style="margin-top:.5rem">Request the spec sheet</a>
+        <div class="uses">
+          <h3>Where it's used</h3>
+          <ul>
+            <li>Traffic channelizing barrels and barricades</li>
+            <li>Attenuators, crash cushions and barrier walls</li>
+            <li>Guide rails</li>
+            <li>Warning and regulatory signs</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+      <table>
+        <tbody>
+          <tr><th scope="row">Device type</th><td>Category 1 hazard warning device</td></tr>
+          <tr><th scope="row">Approval</th><td>Approved by the FHWA in 2009</td></tr>
+          <tr><th scope="row">Power source</th><td>Wind only. No batteries, solar panels or electrical connections.</td></tr>
+          <tr><th scope="row">Sizes</th><td>Standard 6&Prime; &times; 12&Prime; on a 12&Prime; bracket<br>Large 10&Prime; &times; 12&Prime; on an 18&Prime; bracket</td></tr>
+          <tr><th scope="row">Weight</th><td>Less than 2&frac12; lb</td></tr>
+          <tr><th scope="row">Construction</th><td>Lightweight plastic</td></tr>
+          <tr><th scope="row">Reflective sheeting</th><td>3M Diamond Grade. Fluorescent yellow and fluorescent orange are most common; other colors available.</td></tr>
+          <tr><th scope="row">Accessories</th><td>4&Prime; &times; 3&Prime; L-bracket for horizontal or unlevel surfaces, sold separately</td></tr>
+          <tr><th scope="row">Warranty</th><td>45-day limited warranty on manufacturing defects</td></tr>
+        </tbody>
+      </table>
+      <p class="warranty">Warranty claims are subject to review and approval by the manufacturer. The warranty excludes vandalism, misuse, mishandling, improper storage, acts of nature such as hail, blizzards, tornadoes and heavy thunderstorms, winds over 50 mph, and lack of wind to spin the unit.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="videos">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>See it spinning</h2>
+        <p>Short clips of Spin Alert installed on agency roads.</p>
+      </div>
+      <div class="videos">
+        <figure class="video"><div class="video-frame" data-id="GczAZE4_HOM"><button aria-label="Play video: Night Alert"><img src="https://i.ytimg.com/vi/GczAZE4_HOM/hqdefault.jpg" alt="" loading="lazy"><span class="play"></span></button></div><figcaption>At night</figcaption></figure>
+        <figure class="video"><div class="video-frame" data-id="QvbBkX9UAlA"><button aria-label="Play video: Spin Alert on construction barrels"><img src="https://i.ytimg.com/vi/QvbBkX9UAlA/hqdefault.jpg" alt="" loading="lazy"><span class="play"></span></button></div><figcaption>On construction barrels</figcaption></figure>
+        <figure class="video"><div class="video-frame" data-id="wQ8_mZXHf1s"><button aria-label="Play video: Spin Alert on a stop sign"><img src="https://i.ytimg.com/vi/wQ8_mZXHf1s/hqdefault.jpg" alt="" loading="lazy"><span class="play"></span></button></div><figcaption>On a stop sign</figcaption></figure>
+      </div>
+      <a class="more-link" style="color:var(--asphalt)" href="https://www.youtube.com/@spinalert3922/videos" target="_blank" rel="noopener">Watch more videos on YouTube</a>
+    </div>
+  </section>
+
+  <section class="band band-dark contact" id="contact">
+    <div class="wrap">
+      <div>
+        <h2>Try Spin Alert on your roads</h2>
+        <p style="margin-top:1rem;color:#b9bec3;font-size:1.15rem">We work directly with city, county and state DOT traffic engineers. Call us, or tell us what you need using the form.</p>
+        <div class="direct"><span>David Skripsky, owner</span><a href="tel:+13174450457">(317) 445-0457</a><a href="mailto:skrips@msn.com">skrips@msn.com</a></div>
+        <ul class="reasons">
+          <li><strong>Sample units</strong><span>Install a few markers and see how they perform in your conditions.</span></li>
+          <li><strong>Spec sheet</strong><span>Get sizes, mounting and sheeting details for your plans and bid documents.</span></li>
+          <li><strong>Quote</strong><span>Get pricing for a project, a pilot or an annual contract.</span></li>
+        </ul>
+      </div>
+      <form id="contactForm" novalidate>
+        <div class="field"><label for="name">Name</label><input type="text" id="name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="email">Work email</label><input type="email" id="email" name="email" autocomplete="email" required></div>
+        <div class="field"><label for="agency">Agency or organization</label><input type="text" id="agency" name="agency" autocomplete="organization" required></div>
+        <div class="field"><label for="role">Role</label><input type="text" id="role" name="role" placeholder="e.g. Traffic engineer"></div>
+        <div class="field full">
+          <label for="need">What do you need?</label>
+          <select id="need" name="need">
+            <option>Sample units</option>
+            <option>Spec sheet</option>
+            <option>Quote</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="field full"><label for="msg">Project details <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label><textarea id="msg" name="msg" placeholder="Location, device types, quantities, timeline"></textarea></div>
+        <button class="btn btn-primary" type="submit">Send request</button>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; <span id="yr"></span> Spin Alert is a trademark of Skrips Marketing, Inc.</span>
+    <span>Designed by <a href="https://editmelo.com" target="_blank" rel="noopener">Edit Me Lo</a></span>
+  </div>
+</footer>
+
+<script>
+  // Where form requests go. Replace with the real inbox (or a form service endpoint).
+  const CONTACT_EMAIL = "skrips@msn.com";
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  // ---------- Videos: load the YouTube player only when clicked ----------
+  document.querySelectorAll(".video-frame").forEach(frame => {
+    frame.querySelector("button").addEventListener("click", () => {
+      const iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube-nocookie.com/embed/" + frame.dataset.id + "?autoplay=1&rel=0";
+      iframe.title = frame.querySelector("button").getAttribute("aria-label").replace("Play video: ", "");
+      iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+      iframe.allowFullscreen = true;
+      frame.replaceChildren(iframe);
+      iframe.focus();
+    });
+  });
+
+  // ---------- Contact form ----------
+  const form = document.getElementById("contactForm");
+  const status = document.getElementById("formStatus");
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const missing = [...form.querySelectorAll("[required]")].filter(f => !f.value.trim());
+    const email = form.email.value.trim();
+    if (missing.length) {
+      status.style.color = "#b3121f";
+      status.textContent = "Add your " + missing.map(f => f.previousElementSibling.textContent.toLowerCase()).join(", ") + " to send the request.";
+      missing[0].focus(); return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      status.style.color = "#b3121f";
+      status.textContent = "Enter a work email in the format name@agency.gov.";
+      form.email.focus(); return;
+    }
+    const subject = "Spin Alert request: " + form.need.value + " (" + form.agency.value.trim() + ")";
+    const body = [
+      "Name: " + form.name.value.trim(),
+      "Email: " + email,
+      "Agency: " + form.agency.value.trim(),
+      "Role: " + form.role.value.trim(),
+      "Request: " + form.need.value,
+      "", form.msg.value.trim()
+    ].join("\n");
+    window.location.href = "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    status.style.color = "#2f6b2f";
+    status.textContent = "Your email app is opening with the request filled in. Send it from there.";
+  });
+</script>
+</body>
+</html>
